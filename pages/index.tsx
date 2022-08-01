@@ -37,7 +37,9 @@ const Home: NextPage<Props> = (props) => {
 
 export const getStaticProps = async () => {
   const client = await MongoClient.connect(
-    "mongodb+srv://thomas-cc:dyuICI95mJtp9CXx@cluster0.8ioiysa.mongodb.net/shoppingListDb?retryWrites=true&w=majority"
+    "mongodb+srv://" +
+      process.env.API_KEY +
+      ".mongodb.net/shoppingListDb?retryWrites=true&w=majority"
   );
   const db = client.db();
   const shoppingListCollection = db.collection("shoppingList");
