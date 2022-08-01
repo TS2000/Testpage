@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import { MongoClient } from "mongodb";
 
 interface ShoppingItem {
@@ -19,12 +18,14 @@ const Home: NextPage<Props> = (props) => {
       <Head>
         <title>TS Test site</title>
       </Head>
-      <main className={styles.main}>
+      <main>
         <h4>TS Next Site</h4>
         {props.shoppingItems.map((item) => (
-          <p key={item.id}>
-            {item.name} {item.picked ? <span>J</span> : <span>N</span>}
-          </p>
+          <div className="max-w-md shadow-md">
+            <p key={item.id}>
+              {item.name} {item.picked ? <span>J</span> : <span>N</span>}
+            </p>
+          </div>
         ))}
       </main>
     </>
