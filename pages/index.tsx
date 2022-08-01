@@ -9,7 +9,7 @@ const Home: NextPage = () => {
         <title>TS Test site</title>
       </Head>
       <main className={styles.main}>
-        <h4>TS Next Site</h4>
+        <h4>TS Next Site :-)</h4>
       </main>
     </>
   );
