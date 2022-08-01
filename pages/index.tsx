@@ -16,18 +16,21 @@ const Home: NextPage<Props> = (props) => {
   return (
     <>
       <Head>
-        <title>TS Test site</title>
+        <title>Shopping List</title>
       </Head>
-      <main>
-        <h4>TS Next Site</h4>
-        {props.shoppingItems.map((item) => (
-          <div className="max-w-md shadow-md">
-            <p key={item.id}>
-              {item.name} {item.picked ? <span>J</span> : <span>N</span>}
-            </p>
-          </div>
-        ))}
-      </main>
+      <div className="container mx-auto my-5">
+        <h4>Shopping List</h4>
+        <div className="my-2 space-y-2">
+          {props.shoppingItems.map((item) => (
+            <div className="flex pl-3 rounded bg-gray-200" key={item.id}>
+              <p className="inline-flex items-center">{item.name}</p>
+              <a className="inline-flex items-center justify-center ml-auto px-2 py-3 text-xs font-medium text-gray-500 bg-gray-300 rounded">
+                {item.picked ? <>picked</> : <>not picked</>}
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   );
 };
