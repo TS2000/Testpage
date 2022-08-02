@@ -5,13 +5,30 @@ import { MongoClient } from "mongodb";
 import AddItemForm from "../components/AddItemForm";
 import { ShoppingItem } from "../components/types/types";
 import { useEffect, useState } from "react";
+import gql from "graphql-tag";
+import { initializeApollo } from "../apollo/client";
+import { useQuery } from "@apollo/client";
 
 interface Props {
   shoppingItems: ShoppingItem[];
 }
 
+const ItemsQuery = gql`
+  query ItemsQuery {
+    items {
+      id
+      name
+      picked
+    }
+  }
+`;
+
 const Home: NextPage<Props> = (props) => {
-  const [shoppingItems, setShoppingItems] = useState(props.shoppingItems);
+  const {
+    data: { items },
+  } = useQuery(ItemsQuery);
+
+  const [shoppingItems, setShoppingItems] = useState<ShoppingItem[]>([]);
 
   const getShoppingItems = async () => {
     const response = await fetch("/api/get-items", {
@@ -21,7 +38,7 @@ const Home: NextPage<Props> = (props) => {
   };
 
   useEffect(() => {
-    getShoppingItems();
+    // getShoppingItems();
   }, []);
 
   return (
@@ -30,7 +47,9 @@ const Home: NextPage<Props> = (props) => {
         <title>Shopping List</title>
       </Head>
       <div className="container mx-auto my-5">
-        <h1 className="text-white text-3xl text-center">Shopping List</h1>
+        <h1 className="text-white text-3xl text-center">
+          Shopping List {items.name}
+        </h1>
         <div className="my-4 px-3 space-y-2 mx-auto max-w-md">
           <AddItemForm getShoppingItems={getShoppingItems}></AddItemForm>
           {shoppingItems.map((item) => (
@@ -69,15 +88,15 @@ export const getStaticProps = async () => {
   //   revalidate: 10,
   // };
 
+  const apolloClient = initializeApollo();
+
+  await apolloClient.query({
+    query: ItemsQuery,
+  });
+
   return {
     props: {
-      shoppingItems: [
-        {
-          id: "",
-          name: "Loading ...",
-          picked: false,
-        },
-      ],
+      initialApolloState: apolloClient.cache.extract(),
     },
   };
 };
