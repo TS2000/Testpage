@@ -1,8 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import ShoppingItem from "../components/ShoppingItem";
 import { MongoClient } from "mongodb";
 
-interface ShoppingItem {
+export interface ShoppingItem {
   name: string;
   id: string;
   picked: boolean;
@@ -19,15 +20,10 @@ const Home: NextPage<Props> = (props) => {
         <title>Shopping List</title>
       </Head>
       <div className="container mx-auto my-5">
-        <h4>Shopping List</h4>
-        <div className="my-2 space-y-2">
+        <h1 className="text-white text-3xl text-center">Shopping List</h1>
+        <div className="my-4 px-3 space-y-2 mx-auto max-w-md">
           {props.shoppingItems.map((item) => (
-            <div className="flex pl-3 rounded bg-gray-200" key={item.id}>
-              <p className="inline-flex items-center">{item.name}</p>
-              <a className="inline-flex items-center justify-center ml-auto px-2 py-3 text-xs font-medium text-gray-500 bg-gray-300 rounded">
-                {item.picked ? <>picked</> : <>not picked</>}
-              </a>
-            </div>
+            <ShoppingItem item={item} key={item.id} />
           ))}
         </div>
       </div>
