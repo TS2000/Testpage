@@ -71,7 +71,13 @@ export const getStaticProps = async () => {
 
   return {
     props: {
-      shoppingItems: [],
+      shoppingItems: [
+        {
+          id: "",
+          name: "Loading ...",
+          picked: false,
+        },
+      ],
     },
   };
 };
