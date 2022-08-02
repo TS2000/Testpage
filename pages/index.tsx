@@ -4,7 +4,7 @@ import ShoppingListItem from "../components/ShoppingListItem";
 import { MongoClient } from "mongodb";
 import AddItemForm from "../components/AddItemForm";
 import { ShoppingItem } from "../components/types/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   shoppingItems: ShoppingItem[];
@@ -19,6 +19,10 @@ const Home: NextPage<Props> = (props) => {
     });
     setShoppingItems(await response.json());
   };
+
+  useEffect(() => {
+    getShoppingItems();
+  }, []);
 
   return (
     <>
@@ -43,26 +47,32 @@ const Home: NextPage<Props> = (props) => {
 };
 
 export const getStaticProps = async () => {
-  const client = await MongoClient.connect(
-    "mongodb+srv://" +
-      process.env.API_KEY +
-      ".mongodb.net/shoppingListDb?retryWrites=true&w=majority"
-  );
-  const db = client.db();
-  const shoppingListCollection = db.collection("shoppingList");
-
-  const shoppingItems = await shoppingListCollection.find().toArray();
-  await client.close();
+  // const client = await MongoClient.connect(
+  //   "mongodb+srv://" +
+  //     process.env.API_KEY +
+  //     ".mongodb.net/shoppingListDb?retryWrites=true&w=majority"
+  // );
+  // const db = client.db();
+  // const shoppingListCollection = db.collection("shoppingList");
+  //
+  // const shoppingItems = await shoppingListCollection.find().toArray();
+  // await client.close();
+  //
+  // return {
+  //   props: {
+  //     shoppingItems: shoppingItems.map((item) => ({
+  //       name: item.name,
+  //       picked: item.picked,
+  //       id: item._id.toString(),
+  //     })),
+  //   },
+  //   revalidate: 10,
+  // };
 
   return {
     props: {
-      shoppingItems: shoppingItems.map((item) => ({
-        name: item.name,
-        picked: item.picked,
-        id: item._id.toString(),
-      })),
+      shoppingItems: [],
     },
-    revalidate: 10,
   };
 };
 
