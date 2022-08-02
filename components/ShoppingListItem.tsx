@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import Image from "next/image";
 import checkImg from "../public/check-svgrepo-com.svg";
 import trashImg from "../public/garbage-svgrepo-com.svg";
-import { ShoppingItem } from "../pages";
+import { ShoppingItem } from "./types/types";
 
 interface Props {
   item: ShoppingItem;
+  getShoppingItems: () => {};
 }
 
-const ShoppingItem: React.FC<Props> = ({ item }) => {
+const ShoppingListItem: React.FC<Props> = ({ item, getShoppingItems }) => {
   const [pickedState, setPickedState] = useState(item.picked);
 
   const setPickedHandler = async () => {
@@ -24,6 +25,18 @@ const ShoppingItem: React.FC<Props> = ({ item }) => {
     const data = await response.json();
   };
 
+  const deleteHandler = async () => {
+    const response = await fetch("/api/delete-item", {
+      method: "DELETE",
+      body: JSON.stringify(item),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    getShoppingItems();
+  };
+
   return (
     <div
       className={`flex pl-3 rounded bg-white ${pickedState && "opacity-60"}`}
@@ -35,15 +48,18 @@ const ShoppingItem: React.FC<Props> = ({ item }) => {
       </p>
       <button
         onClick={setPickedHandler}
-        className="inline-flex items-center justify-center ml-auto px-3 py-3 text-xs font-medium text-gray-500 bg-green-500"
+        className="inline-flex items-center justify-center ml-auto p-3 text-xs font-medium text-gray-500 bg-green-500"
       >
         <Image src={checkImg} />
       </button>
-      <button className="inline-flex items-center justify-center px-3 py-3 text-xs font-medium text-gray-500 bg-orange-500 rounded-r">
+      <button
+        onClick={deleteHandler}
+        className="inline-flex items-center justify-center p-3 text-xs font-medium text-gray-500 bg-orange-500 rounded-r"
+      >
         <Image src={trashImg} />
       </button>
     </div>
   );
 };
 
-export default ShoppingItem;
+export default ShoppingListItem;
