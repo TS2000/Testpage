@@ -2,13 +2,28 @@ import React, { useState } from "react";
 import Image from "next/image";
 import plusImg from "../public/plus-svgrepo-com.svg";
 import { ShoppingItemDraft } from "./types/types";
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/client";
+
+const CreateMutation = gql`
+  mutation CreateItem($input: CreateItemInput!) {
+    createItem(input: $input) {
+      id
+      name
+      picked
+    }
+  }
+`;
 
 interface Props {
-  getShoppingItems: () => {};
+  getShoppingItems: () => void;
 }
 
 const AddItemForm: React.FC<Props> = ({ getShoppingItems }) => {
   const [newItemName, setNewItemName] = useState("");
+
+  const [createItemMutation, { data, loading, error }] =
+    useMutation(CreateMutation);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -17,14 +32,10 @@ const AddItemForm: React.FC<Props> = ({ getShoppingItems }) => {
         name: newItemName,
         picked: false,
       };
-      const response = await fetch("/api/add-item", {
-        method: "POST",
-        body: JSON.stringify(newItem),
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+      await createItemMutation({
+        variables: { input: newItem },
       });
-      const data = await response.json();
 
       setNewItemName("");
       getShoppingItems();
