@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import plusImg from "../public/plus-svgrepo-com.svg";
 import { ShoppingItemDraft } from "./types/types";
@@ -17,9 +17,13 @@ const CreateMutation = gql`
 
 interface Props {
   getShoppingItems: () => void;
+  setLoadingSpinner: (newSpinnerState: boolean) => void;
 }
 
-const AddItemForm: React.FC<Props> = ({ getShoppingItems }) => {
+const AddItemForm: React.FC<Props> = ({
+  getShoppingItems,
+  setLoadingSpinner,
+}) => {
   const [newItemName, setNewItemName] = useState("");
 
   const [createItemMutation, { data, loading, error }] =
@@ -45,6 +49,10 @@ const AddItemForm: React.FC<Props> = ({ getShoppingItems }) => {
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewItemName(e.target.value);
   };
+
+  useEffect(() => {
+    setLoadingSpinner(loading);
+  }, [loading]);
 
   return (
     <form onSubmit={submitHandler}>

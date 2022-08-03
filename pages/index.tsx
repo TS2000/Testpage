@@ -7,7 +7,8 @@ import { ShoppingItem } from "../components/types/types";
 import { useEffect, useState } from "react";
 import gql from "graphql-tag";
 import { initializeApollo } from "../apollo/client";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 interface Props {
   shoppingItems: ShoppingItem[];
@@ -24,10 +25,19 @@ const ItemsQuery = gql`
 `;
 
 const Home: NextPage<Props> = (props) => {
+  const [showSpinner, setShowSpinner] = useState(false);
   const { loading, error, data, refetch } = useQuery(ItemsQuery);
 
   const shoppingItems = data ? data.items : [];
   const refetchItems = () => refetch();
+
+  useEffect(() => {
+    setShowSpinner(loading);
+  }, [loading]);
+
+  const setLoadingSpinner = (newStatus: boolean) => {
+    setShowSpinner(newStatus);
+  };
 
   return (
     <>
@@ -39,10 +49,15 @@ const Home: NextPage<Props> = (props) => {
           Shopping List
         </h1>
         <div className="my-4 px-3 space-y-2 mx-auto max-w-md">
-          <AddItemForm getShoppingItems={refetchItems}></AddItemForm>
+          <AddItemForm
+            setLoadingSpinner={setLoadingSpinner}
+            getShoppingItems={refetchItems}
+          ></AddItemForm>
+          {showSpinner && <LoadingSpinner></LoadingSpinner>}
           {shoppingItems.map((item: ShoppingItem) => (
             <ShoppingListItem
               getShoppingItems={refetchItems}
+              setLoadingSpinner={setLoadingSpinner}
               item={item}
               key={item.id}
             />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import checkImg from "../public/check-svgrepo-com.svg";
 import trashImg from "../public/garbage-svgrepo-com.svg";
@@ -21,9 +21,14 @@ const UpdateMutation = gql`
 interface Props {
   item: ShoppingItem;
   getShoppingItems: () => void;
+  setLoadingSpinner: (newSpinnerState: boolean) => void;
 }
 
-const ShoppingListItem: React.FC<Props> = ({ item, getShoppingItems }) => {
+const ShoppingListItem: React.FC<Props> = ({
+  item,
+  getShoppingItems,
+  setLoadingSpinner,
+}) => {
   const [pickedState, setPickedState] = useState(item.picked);
 
   const [
@@ -35,6 +40,14 @@ const ShoppingListItem: React.FC<Props> = ({ item, getShoppingItems }) => {
     updateItemMutation,
     { data: dataUpdate, loading: loadingUpdate, error: errorUpdate },
   ] = useMutation(UpdateMutation);
+
+  useEffect(() => {
+    if (loadingDelete || loadingUpdate) {
+      setLoadingSpinner(true);
+    } else {
+      setLoadingSpinner(false);
+    }
+  }, [loadingDelete, loadingUpdate]);
 
   const setPickedHandler = async () => {
     setPickedState(!pickedState);
