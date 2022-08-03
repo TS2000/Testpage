@@ -3,37 +3,48 @@ import Image from "next/image";
 import checkImg from "../public/check-svgrepo-com.svg";
 import trashImg from "../public/garbage-svgrepo-com.svg";
 import { ShoppingItem } from "./types/types";
+import { useMutation } from "@apollo/client";
+import gql from "graphql-tag";
+
+const DeleteMutation = gql`
+  mutation DeleteItem($id: String!) {
+    deleteItem(id: $id)
+  }
+`;
+
+const UpdateMutation = gql`
+  mutation UpdateItem($input: UpdateItemInput!) {
+    updateItem(input: $input)
+  }
+`;
 
 interface Props {
   item: ShoppingItem;
-  getShoppingItems: () => {};
+  getShoppingItems: () => void;
 }
 
 const ShoppingListItem: React.FC<Props> = ({ item, getShoppingItems }) => {
   const [pickedState, setPickedState] = useState(item.picked);
 
+  const [
+    deleteItemMutation,
+    { data: dataDelete, loading: loadingDelete, error: errorDelete },
+  ] = useMutation(DeleteMutation);
+
+  const [
+    updateItemMutation,
+    { data: dataUpdate, loading: loadingUpdate, error: errorUpdate },
+  ] = useMutation(UpdateMutation);
+
   const setPickedHandler = async () => {
     setPickedState(!pickedState);
-    const changedItem = { ...item, picked: !pickedState };
-    const response = await fetch("/api/set-picked", {
-      method: "PUT",
-      body: JSON.stringify(changedItem),
-      headers: {
-        "Content-Type": "application/json",
-      },
+    await updateItemMutation({
+      variables: { input: { id: item.id, picked: !item.picked } },
     });
-    const data = await response.json();
   };
 
   const deleteHandler = async () => {
-    const response = await fetch("/api/delete-item", {
-      method: "DELETE",
-      body: JSON.stringify(item),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
+    await deleteItemMutation({ variables: { id: item.id } });
     getShoppingItems();
   };
 

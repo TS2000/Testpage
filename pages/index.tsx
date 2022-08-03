@@ -5,24 +5,29 @@ import { MongoClient } from "mongodb";
 import AddItemForm from "../components/AddItemForm";
 import { ShoppingItem } from "../components/types/types";
 import { useEffect, useState } from "react";
+import gql from "graphql-tag";
+import { initializeApollo } from "../apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 
 interface Props {
   shoppingItems: ShoppingItem[];
 }
 
+const ItemsQuery = gql`
+  query ItemsQuery {
+    items {
+      id
+      name
+      picked
+    }
+  }
+`;
+
 const Home: NextPage<Props> = (props) => {
-  const [shoppingItems, setShoppingItems] = useState(props.shoppingItems);
+  const { loading, error, data, refetch } = useQuery(ItemsQuery);
 
-  const getShoppingItems = async () => {
-    const response = await fetch("/api/get-items", {
-      method: "GET",
-    });
-    setShoppingItems(await response.json());
-  };
-
-  useEffect(() => {
-    getShoppingItems();
-  }, []);
+  const shoppingItems = data ? data.items : [];
+  const refetchItems = () => refetch();
 
   return (
     <>
@@ -30,12 +35,14 @@ const Home: NextPage<Props> = (props) => {
         <title>Shopping List</title>
       </Head>
       <div className="container mx-auto my-5">
-        <h1 className="text-white text-3xl text-center">Shopping List</h1>
+        <h1 onClick={refetchItems} className="text-white text-3xl text-center">
+          Shopping List
+        </h1>
         <div className="my-4 px-3 space-y-2 mx-auto max-w-md">
-          <AddItemForm getShoppingItems={getShoppingItems}></AddItemForm>
-          {shoppingItems.map((item) => (
+          <AddItemForm getShoppingItems={refetchItems}></AddItemForm>
+          {shoppingItems.map((item: ShoppingItem) => (
             <ShoppingListItem
-              getShoppingItems={getShoppingItems}
+              getShoppingItems={refetchItems}
               item={item}
               key={item.id}
             />
@@ -46,40 +53,46 @@ const Home: NextPage<Props> = (props) => {
   );
 };
 
-export const getStaticProps = async () => {
-  // const client = await MongoClient.connect(
-  //   "mongodb+srv://" +
-  //     process.env.API_KEY +
-  //     ".mongodb.net/shoppingListDb?retryWrites=true&w=majority"
-  // );
-  // const db = client.db();
-  // const shoppingListCollection = db.collection("shoppingList");
-  //
-  // const shoppingItems = await shoppingListCollection.find().toArray();
-  // await client.close();
-  //
-  // return {
-  //   props: {
-  //     shoppingItems: shoppingItems.map((item) => ({
-  //       name: item.name,
-  //       picked: item.picked,
-  //       id: item._id.toString(),
-  //     })),
-  //   },
-  //   revalidate: 10,
-  // };
-
-  return {
-    props: {
-      shoppingItems: [
-        {
-          id: "",
-          name: "Loading ...",
-          picked: false,
-        },
-      ],
-    },
-  };
-};
+// export const getStaticProps = async () => {
+//   // const client = await MongoClient.connect(
+//   //   "mongodb+srv://" +
+//   //     process.env.API_KEY +
+//   //     ".mongodb.net/shoppingListDb?retryWrites=true&w=majority"
+//   // );
+//   // const db = client.db();
+//   // const shoppingListCollection = db.collection("shoppingList");
+//   //
+//   // const shoppingItems = await shoppingListCollection.find().toArray();
+//   // await client.close();
+//   //
+//   // return {
+//   //   props: {
+//   //     shoppingItems: shoppingItems.map((item) => ({
+//   //       name: item.name,
+//   //       picked: item.picked,
+//   //       id: item._id.toString(),
+//   //     })),
+//   //   },
+//   //   revalidate: 10,
+//   // };
+//
+//   const apolloClient = initializeApollo();
+//
+//   await apolloClient.query({
+//     query: ItemsQuery,
+//   });
+//
+//   const emptyState = {
+//     data: {
+//       items: [],
+//     },
+//   };
+//
+//   return {
+//     props: {
+//       initialApolloState: apolloClient.cache.extract(),
+//     },
+//   };
+// };
 
 export default Home;
