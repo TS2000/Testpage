@@ -24,22 +24,26 @@ const ItemsQuery = gql`
 `;
 
 const Home: NextPage<Props> = (props) => {
-  const {
-    data: { items },
-  } = useQuery(ItemsQuery);
+  // const {
+  //   data: { items },
+  // } = useQuery(ItemsQuery);
 
-  const [shoppingItems, setShoppingItems] = useState<ShoppingItem[]>([]);
+  const { loading, error, data } = useQuery(ItemsQuery);
 
+  console.log("Data: ", data.items);
+
+  // const [shoppingItems, setShoppingItems] = useState<ShoppingItem[]>([]);
+  //
   const getShoppingItems = async () => {
-    const response = await fetch("/api/get-items", {
-      method: "GET",
-    });
-    setShoppingItems(await response.json());
+    // const response = await fetch("/api/get-items", {
+    //   method: "GET",
+    // });
+    // setShoppingItems(await response.json());
   };
 
-  useEffect(() => {
-    // getShoppingItems();
-  }, []);
+  // useEffect(() => {
+  //   // getShoppingItems();
+  // }, []);
 
   return (
     <>
@@ -48,17 +52,17 @@ const Home: NextPage<Props> = (props) => {
       </Head>
       <div className="container mx-auto my-5">
         <h1 className="text-white text-3xl text-center">
-          Shopping List {items.name}
+          {/*Shopping List {data.items.name}*/}
         </h1>
         <div className="my-4 px-3 space-y-2 mx-auto max-w-md">
           <AddItemForm getShoppingItems={getShoppingItems}></AddItemForm>
-          {shoppingItems.map((item) => (
-            <ShoppingListItem
-              getShoppingItems={getShoppingItems}
-              item={item}
-              key={item.id}
-            />
-          ))}
+          {/*{data.items.map((item: ShoppingItem) => (*/}
+          {/*  <ShoppingListItem*/}
+          {/*    getShoppingItems={getShoppingItems}*/}
+          {/*    item={item}*/}
+          {/*    key={item.id}*/}
+          {/*  />*/}
+          {/*))}*/}
         </div>
       </div>
     </>
@@ -94,9 +98,15 @@ export const getStaticProps = async () => {
     query: ItemsQuery,
   });
 
+  const emptyState = {
+    data: {
+      items: [],
+    },
+  };
+
   return {
     props: {
-      initialApolloState: apolloClient.cache.extract(),
+      initialApolloState: emptyState, // apolloClient.cache.extract(),
     },
   };
 };
