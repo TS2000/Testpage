@@ -45,6 +45,13 @@ const Home: NextPage<Props> = (props) => {
     setShowSpinner(loading || createLoading);
   }, [loading, createLoading]);
 
+  useEffect(() => {
+    const timer = setInterval(() => refetch(), 15000);
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, []);
+
   const mergeSelectedItems = async (newItems: StandardItem[]) => {
     setShowStandardItems(false);
 
@@ -85,6 +92,7 @@ const Home: NextPage<Props> = (props) => {
               getShoppingItems={refetchItems}
               setLoadingSpinner={setLoadingSpinner}
               item={item}
+              picked={item.picked}
               key={item.id}
             />
           ))}

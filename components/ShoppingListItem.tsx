@@ -8,16 +8,19 @@ import { DeleteMutation, UpdateMutation } from "./mutations/mutations";
 
 interface Props {
   item: ShoppingItem;
+  picked: boolean;
   getShoppingItems: () => void;
   setLoadingSpinner: (newSpinnerState: boolean) => void;
 }
 
 const ShoppingListItem: React.FC<Props> = ({
   item,
+  picked,
   getShoppingItems,
   setLoadingSpinner,
 }) => {
-  const [pickedState, setPickedState] = useState(item.picked);
+  if (item.name === "Äpfel") console.log(picked);
+  const [pickedState, setPickedState] = useState(picked);
 
   const [
     deleteItemMutation,
@@ -32,6 +35,10 @@ const ShoppingListItem: React.FC<Props> = ({
   useEffect(() => {
     setLoadingSpinner(loadingDelete || loadingUpdate);
   }, [loadingDelete, loadingUpdate]);
+
+  useEffect(() => {
+    setPickedState(picked);
+  }, [picked]);
 
   const setPickedHandler = async () => {
     setPickedState(!pickedState);
