@@ -7,6 +7,11 @@ export const typeDefs = gql`
     picked: Boolean!
   }
 
+  type StandardItem {
+    id: String!
+    name: String!
+  }
+
   input CreateItemInput {
     name: String!
     picked: Boolean!
@@ -20,6 +25,7 @@ export const typeDefs = gql`
 
   type Query {
     items: [ShoppingItem]!
+    standardItems: [StandardItem]!
   }
 
   type Mutation {

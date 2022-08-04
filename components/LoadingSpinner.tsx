@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledSpinner = styled.div`
   display: inline-block;
-  position: absolute;
+  position: fixed;
   width: 80px;
   height: 80px;
   left: calc(50% - 40px);
@@ -80,10 +80,11 @@ const StyledSpinner = styled.div`
   }
   @keyframes lds-roller {
     0% {
-      transform: rotate(0deg);
+      transform: rotate(0deg) scale(1);
     }
+
     100% {
-      transform: rotate(360deg);
+      transform: rotate(360deg) scale(1);
     }
   }
 `;

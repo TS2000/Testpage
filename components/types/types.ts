@@ -5,3 +5,5 @@ export interface ShoppingItem {
 }
 
 export type ShoppingItemDraft = Omit<ShoppingItem, "id">;
+
+export type StandardItem = Pick<ShoppingItem, "name" | "id">;
