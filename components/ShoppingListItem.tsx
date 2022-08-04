@@ -4,19 +4,7 @@ import checkImg from "../public/check-svgrepo-com.svg";
 import trashImg from "../public/garbage-svgrepo-com.svg";
 import { ShoppingItem } from "./types/types";
 import { useMutation } from "@apollo/client";
-import gql from "graphql-tag";
-
-const DeleteMutation = gql`
-  mutation DeleteItem($id: String!) {
-    deleteItem(id: $id)
-  }
-`;
-
-const UpdateMutation = gql`
-  mutation UpdateItem($input: UpdateItemInput!) {
-    updateItem(input: $input)
-  }
-`;
+import { DeleteMutation, UpdateMutation } from "./mutations/mutations";
 
 interface Props {
   item: ShoppingItem;

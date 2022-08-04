@@ -2,18 +2,8 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import plusImg from "../public/plus-svgrepo-com.svg";
 import { ShoppingItemDraft } from "./types/types";
-import gql from "graphql-tag";
 import { useMutation } from "@apollo/client";
-
-const CreateMutation = gql`
-  mutation CreateItem($input: CreateItemInput!) {
-    createItem(input: $input) {
-      id
-      name
-      picked
-    }
-  }
-`;
+import { CreateMutation } from "./mutations/mutations";
 
 interface Props {
   getShoppingItems: () => void;

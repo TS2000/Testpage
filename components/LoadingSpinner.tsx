@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledSpinner = styled.div`
   display: inline-block;
-  position: absolute;
+  position: fixed;
   width: 80px;
   height: 80px;
   left: calc(50% - 40px);
