@@ -42,11 +42,7 @@ const ShoppingListItem: React.FC<Props> = ({
   ] = useMutation(UpdateMutation);
 
   useEffect(() => {
-    if (loadingDelete || loadingUpdate) {
-      setLoadingSpinner(true);
-    } else {
-      setLoadingSpinner(false);
-    }
+    setLoadingSpinner(loadingDelete || loadingUpdate);
   }, [loadingDelete, loadingUpdate]);
 
   const setPickedHandler = async () => {

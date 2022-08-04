@@ -1,11 +1,11 @@
 import { MongoClient, ObjectId } from "mongodb";
 
+const clientUrl = `mongodb+srv://${process.env.API_KEY}.mongodb.net/shoppingListDb?retryWrites=true&w=majority`;
+
 export const resolvers = {
   Query: {
     async items(_parent, _args, _context, _info) {
-      const client = await MongoClient.connect(
-        `mongodb+srv://${process.env.API_KEY}.mongodb.net/shoppingListDb?retryWrites=true&w=majority`
-      );
+      const client = await MongoClient.connect(clientUrl);
 
       try {
         const db = client.db();
@@ -23,12 +23,28 @@ export const resolvers = {
         return [];
       }
     },
+    async standardItems(_parent, _args, _context, _info) {
+      const client = await MongoClient.connect(clientUrl);
+
+      try {
+        const db = client.db();
+        const shoppingListCollection = db.collection("standardItems");
+
+        const itemsfromDb = await shoppingListCollection.find().toArray();
+        const shoppingItems = itemsfromDb.map((item) => ({
+          name: item.name,
+          id: item._id.toString(),
+        }));
+
+        return shoppingItems;
+      } catch (e) {
+        return [];
+      }
+    },
   },
   Mutation: {
     async createItem(parent, args, context) {
-      const client = await MongoClient.connect(
-        `mongodb+srv://${process.env.API_KEY}.mongodb.net/shoppingListDb?retryWrites=true&w=majority`
-      );
+      const client = await MongoClient.connect(clientUrl);
 
       try {
         const itemData = {
@@ -51,9 +67,7 @@ export const resolvers = {
       }
     },
     async deleteItem(parent, args, context) {
-      const client = await MongoClient.connect(
-        `mongodb+srv://${process.env.API_KEY}.mongodb.net/shoppingListDb?retryWrites=true&w=majority`
-      );
+      const client = await MongoClient.connect(clientUrl);
 
       try {
         const db = client.db();
@@ -69,9 +83,7 @@ export const resolvers = {
       }
     },
     async updateItem(parent, args, context) {
-      const client = await MongoClient.connect(
-        `mongodb+srv://${process.env.API_KEY}.mongodb.net/shoppingListDb?retryWrites=true&w=majority`
-      );
+      const client = await MongoClient.connect(clientUrl);
 
       try {
         const db = client.db();

@@ -80,10 +80,11 @@ const StyledSpinner = styled.div`
   }
   @keyframes lds-roller {
     0% {
-      transform: rotate(0deg);
+      transform: rotate(0deg) scale(1);
     }
+
     100% {
-      transform: rotate(360deg);
+      transform: rotate(360deg) scale(1);
     }
   }
 `;
