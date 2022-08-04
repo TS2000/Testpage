@@ -21,6 +21,8 @@ export const resolvers = {
         return shoppingItems;
       } catch (e) {
         return [];
+      } finally {
+        await client.close();
       }
     },
     async standardItems(_parent, _args, _context, _info) {
@@ -39,6 +41,8 @@ export const resolvers = {
         return shoppingItems;
       } catch (e) {
         return [];
+      } finally {
+        await client.close();
       }
     },
   },
@@ -64,6 +68,8 @@ export const resolvers = {
         return result;
       } catch (e) {
         return {};
+      } finally {
+        await client.close();
       }
     },
     async deleteItem(parent, args, context) {
@@ -80,6 +86,8 @@ export const resolvers = {
         return result.deletedCount;
       } catch (e) {
         return {};
+      } finally {
+        await client.close();
       }
     },
     async updateItem(parent, args, context) {
@@ -109,6 +117,8 @@ export const resolvers = {
         return args.input.id;
       } catch (e) {
         return {};
+      } finally {
+        await client.close();
       }
     },
   },
