@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import Home from "../../pages";
 import { MockedProvider, MockedResponse } from "@apollo/client/testing";
 import { ItemsQuery } from "../../components/mutations/mutations";
-import { aws4 } from "mongodb/src/deps";
 
 const mocks: readonly MockedResponse<Record<string, any>>[] | undefined = [
   {
